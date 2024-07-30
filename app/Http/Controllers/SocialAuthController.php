@@ -43,7 +43,7 @@ class SocialAuthController extends Controller
             Auth::login($user);
 
 
-            return view('layouts.header');
+            return redirect()->route('admin.qrcodes.index');
 
         }catch (Exception $e) {
             return redirect()->route('login')->withErrors(['google_login' => 'Failed to authenticate with Google.']);
