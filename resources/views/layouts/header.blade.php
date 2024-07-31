@@ -16,6 +16,7 @@
 
     <title>QRcode Generator</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" />
     <link href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
@@ -53,22 +54,33 @@
                         </a>
 
                         <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                            <span class="text-dark">{{auth()->user()->name}}</span>
+                            <span class="text-dark">{{ auth()->user()->name }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
+                            <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                <i class="align-middle me-1" data-feather="user"></i> Profile
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('logout') }}"
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="align-middle me-1" data-feather="log-out"></i> Log Out
+                            </a>
+                            <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display: none;">
+                                @csrf
+                            </form>
                         </div>
                     </li>
                 </ul>
             </div>
         </nav>
 
-                @yield('content')
+
+        @yield('content')
     </div>
 </div>
 
 <script src="{{asset('js/app.js')}}"></script>
+<script>feather.replace();</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {

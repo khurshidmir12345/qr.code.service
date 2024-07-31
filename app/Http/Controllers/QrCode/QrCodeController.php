@@ -44,13 +44,14 @@ class QrCodeController extends Controller
         $qr = new QrCode();
         $qr->name = $name;
         $qr->qr_link = $link;
-        $qr->qr_image = 'svg';
+        $qr->qr_image = 'png';
+        $qr->views = 0;
         $qr->user_id = auth()->id();
         $qr->save();
 
         // Generate the QR code with the scan route
         $data = route('qrcodes.scan', ['id' => $qr->id]);
-        $qrCodeImage = QrCodeFacade::format('svg')->size(200)->generate($data);
+        $qrCodeImage = QrCodeFacade::format('png')->size(200)->generate($data);
 
         // Ensure the directory exists
         $qrImagesDir = public_path('qr_images');
@@ -59,11 +60,11 @@ class QrCodeController extends Controller
         }
 
         // Save the QR code image to a file
-        $filename = time() . '.svg';  // Use a unique filename
+        $filename = time() . '.png';
         $filePath = $qrImagesDir . '/' . $filename;
         file_put_contents($filePath, $qrCodeImage);
 
-        // Update the QR code record with the image path
+
         $qr->qr_image = 'qr_images/' . $filename;
         $qr->save();
 
@@ -148,10 +149,9 @@ class QrCodeController extends Controller
     {
         $qrCode = QrCode::query()->findOrFail($id);
 
-        // Increment the views count
-        $qrCode->increment('views');
+        $qrCode->views += 1;
+        $qrCode->save();
 
-        // Redirect to the original link
         return redirect($qrCode->qr_link);
     }
 }

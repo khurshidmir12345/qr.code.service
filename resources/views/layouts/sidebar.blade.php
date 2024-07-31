@@ -44,7 +44,7 @@
             <li class="sidebar-item {{ request()->routeIs('admin.qrcodes.index') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.qrcodes.index') }}">
                     <i class="align-middle" data-feather="square"></i>
-                    <span class="align-middle">Qr Lists</span>
+                    <span class="align-middle">Qr Codes</span>
                 </a>
             </li>
             @endcan
