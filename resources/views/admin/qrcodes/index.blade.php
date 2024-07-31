@@ -22,7 +22,7 @@
                         <td>
                             <img src="{{ asset($qr->qr_image) }}" alt="QR Code Image" class="img-thumbnail" style="width: 100px; height: 100px;">
                         </td>
-                        <td>{{$qr->views}}</td>
+                        <td><b style="color: green">+{{ $qr->views }}</b></td>
                         <td>
                             <a href="{{route('admin.qrcodes.show',[$qr->id])}}" style="margin-right: 8px"
                                class="btn btn-info position-relative float-start">
