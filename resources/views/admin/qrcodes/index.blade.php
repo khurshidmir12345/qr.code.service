@@ -8,8 +8,8 @@
                 <thead>
                 <th>id</th>
                 <th>Name</th>
-                <th>qr_link</th>
-                <th>qr_image</th>
+                <th>Link</th>
+                <th>Qr Code</th>
                 <th>views</th>
                 <th>Actions</th>
                 </thead>
