@@ -27,16 +27,16 @@
         <!-- Google Login Button -->
         <div class="mt-5">
             <a href="{{ route('google.redirect') }}" class="flex items-center justify-center px-4 py-2 bg-white border border-green-500 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-100">
-                <img src="{{ asset('logos/google.png') }}" class="w-20 h-5 mr-2" alt="Google Logo">
+                <img src="{{ asset('logos/google.png') }}" class="w-20 h-6 mr-2" alt="Google Logo">
                 <span>{{ __('Continue with Google') }}</span>
             </a>
         </div>
 
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+        <div class="float-end mt-4">
+            <button type="submit" class="flex items-end justify-center px-4 py-2 bg-white border border-blue-500 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-blue-300">
+                <span class="w-20 h-15 mr-2">{{ __('Log in') }}</span>
+            </button>
         </div>
     </form>
 </x-guest-layout>
