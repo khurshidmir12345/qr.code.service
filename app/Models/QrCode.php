@@ -11,7 +11,7 @@ class QrCode extends Model
     use HasFactory;
 
     protected $table = 'qr_codes';
-    protected $fillable = ['name', 'qr_link', 'qr_image', 'views'];
+    protected $fillable = ['name', 'qr_link', 'qr_image', 'generated_link', 'views'];
 
 
 
