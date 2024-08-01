@@ -18,15 +18,21 @@ class SocialAuthController extends Controller
 
     public function callback()
     {
-
         try {
-
             $googleUser = Socialite::driver('google')->stateless()->user();
 
+            $user = User::withTrashed()->where('email', $googleUser->getEmail())->first();
 
-            $user = User::where('email', $googleUser->getEmail())->first();
+            if ($user) {
+                if ($user->trashed()) {
 
-            if (!$user) {
+                    $user->restore();
+                }
+                $user->update([
+                    'google_token' => $googleUser->token,
+                    'google_refresh_token' => $googleUser->refreshToken ?? null,
+                ]);
+            } else {
 
                 $user = User::create([
                     'name' => $googleUser->getName(),
@@ -41,13 +47,12 @@ class SocialAuthController extends Controller
             }
 
             Auth::login($user);
-
-
             return redirect()->route('admin.qrcodes.index');
 
-        }catch (Exception $e) {
+        } catch (Exception $e) {
+            \Log::error('Google login error: ' . $e->getMessage());
             return redirect()->route('login')->withErrors(['google_login' => 'Failed to authenticate with Google.']);
         }
-
     }
+
 }

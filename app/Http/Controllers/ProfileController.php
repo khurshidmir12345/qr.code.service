@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 
 class ProfileController extends Controller
 {
@@ -37,24 +40,20 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
+
+    public function destroy($id): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+        $user = User::query()->find($id);
 
-        $user = $request->user();
+        if ($user) {
+            $user->tokens->each(function ($token) {
+                $token->revoke();
+            });
+        }
 
-        Auth::logout();
+        $user->forceDelete();
 
-        $user->delete();
+        return Redirect::route('admin.qrcodes.index');
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
     }
 }

@@ -40,7 +40,6 @@ class QrCodeController extends Controller
         $name = $request->input('name');
         $link = $request->input('link');
 
-        // Create new QrCode record first to get the ID
         $qr = new QrCode();
         $qr->name = $name;
         $qr->qr_link = $link;
@@ -49,22 +48,19 @@ class QrCodeController extends Controller
         $qr->user_id = auth()->id();
         $qr->save();
 
-        // Generate the QR code with the scan route
         $data = route('qrcodes.scan', ['id' => $qr->id]);
         $qrCodeImage = QrCodeFacade::format('png')->size(200)->generate($data);
 
-        // Ensure the directory exists
         $qrImagesDir = public_path('qr_images');
         if (!file_exists($qrImagesDir)) {
             mkdir($qrImagesDir, 0755, true);
         }
 
-        // Save the QR code image to a file
         $filename = time() . '.png';
         $filePath = $qrImagesDir . '/' . $filename;
         file_put_contents($filePath, $qrCodeImage);
 
-
+        $qr->generated_link = $data;
         $qr->qr_image = 'qr_images/' . $filename;
         $qr->save();
 
@@ -107,19 +103,20 @@ class QrCodeController extends Controller
         $link = $request->input('link');
 
         $data = route('qrcodes.scan', ['id' => $qrCode->id]);
-        $qrCodeImage = QrCodeFacade::format('svg')->size(200)->generate($data);
+        $qrCodeImage = QrCodeFacade::format('png')->size(200)->generate($data);
 
         $qrImagesDir = public_path('qr_images');
         if (!file_exists($qrImagesDir)) {
             mkdir($qrImagesDir, 0755, true);
         }
 
-        $filename = time() . '.svg';
+        $filename = time() . '.png';
         $filePath = $qrImagesDir . '/' . $filename;
         file_put_contents($filePath, $qrCodeImage);
 
         $qrCode->name = $name;
         $qrCode->qr_link = $link;
+        $qrCode->generated_link = $data;
         $qrCode->qr_image = 'qr_images/' . $filename;
         $qrCode->save();
 

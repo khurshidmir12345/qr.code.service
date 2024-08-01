@@ -39,7 +39,7 @@
                     <div class="card-footer">
                             <a href="{{ route('admin.qrcodes.index') }}" class="btn btn-danger">
                                 Back to List </a>
-                            <a href="{{ asset($qrCode->qr_image) }}" download="{{ $qrCode->name }}.svg" class="btn btn-outline-success">
+                            <a href="{{ asset($qrCode->qr_image) }}" download="{{ $qrCode->name }}.png" class="btn btn-outline-success">
                                 Save QR Image  <i class="align-middle" data-feather="save"></i></a>
                             <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($qrCode->qr_link) }}" class="btn btn-outline-primary" target="_blank">Facebook</a>
                             <a href="https://twitter.com/intent/tweet?url={{ urlencode($qrCode->qr_link) }}" class="btn btn-outline-info " target="_blank">Twitter</a>
