@@ -21,8 +21,12 @@
                                         <td>{{ $qrCode->name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Link:</th>
+                                        <th>QR-Link:</th>
                                         <td><a href="{{ $qrCode->qr_link }}" target="_blank">{{ $qrCode->qr_link }}</a></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Generated-link:</th>
+                                        <td>{{ $qrCode->generated_link }}</td>
                                     </tr>
                                     <tr>
                                         <th>Views:</th>
