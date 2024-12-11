@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/', function () {
-    return redirect()->route('admin.qrcodes.index');
+    return redirect()->route('login');
 })->middleware('auth');
 
 
