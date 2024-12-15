@@ -1,13 +1,170 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Qr Service</title>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>QR Code Service Landing Page</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background-color: #f9f9f9;
+                color: #333;
+            }
 
-</body>
+            .hero {
+                background: linear-gradient(to right, #4caf50, #2e8b57);
+                color: white;
+                text-align: center;
+                padding: 50px 20px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
+            }
+
+            .hero button {
+                background-color: #fff;
+                color: #4caf50;
+                padding: 12px 25px;
+                border: none;
+                border-radius: 5px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+            .hero button:hover {
+                background-color: #4caf50;
+                color: white;
+            }
+
+            .features {
+                max-width: 1000px;
+                margin: 50px auto;
+                padding: 0 20px;
+                text-align: center;
+            }
+
+            .features h2 {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .features .feature-list {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                gap: 20px;
+            }
+
+            .features .feature {
+                flex: 1 1 calc(30% - 20px);
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+
+            .features .feature img {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 15px;
+            }
+
+            .features .feature h3 {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+
+            .cta {
+                background-color: #2e8b57;
+                color: white;
+                text-align: center;
+                padding: 30px 20px;
+            }
+
+            .cta h2 {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .cta button {
+                background-color: white;
+                color: #2e8b57;
+                padding: 12px 25px;
+                border: none;
+                border-radius: 5px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+            .cta button:hover {
+                background-color: #fff;
+                color: #4caf50;
+            }
+
+            @media (max-width: 768px) {
+                .features .feature {
+                    flex: 1 1 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="hero">
+            <h1>Welcome to QR Code Service</h1>
+            <p>
+                Easily generate and manage your QR codes for personal or
+                business use.
+            </p>
+            <form action="https://itap.uz/login" method="GET">
+                <button type="submit">Login</button>
+            </form>
+        </div>
+
+        <div class="features">
+            <h2>Why Choose Us?</h2>
+            <div class="feature-list">
+                <div class="feature">
+                    <img src="./img/icons/fast.png" alt="Fast Service" />
+                    <h3>Fast and Easy</h3>
+                    <p>
+                        Create QR codes in just a few seconds with our intuitive
+                        interface.
+                    </p>
+                </div>
+                <div class="feature">
+                    <img src="./img/icons/customize.png" alt="Customizable" />
+                    <h3>Customizable</h3>
+                    <p>
+                        Personalize your QR codes with colors, logos, and more.
+                    </p>
+                </div>
+                <div class="feature">
+                    <img src="./img/icons/stats.png" alt="Track Performance" />
+                    <h3>Track Performance</h3>
+                    <p>
+                        Monitor how many times your QR codes are scanned in
+                        real-time.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta">
+            <h2>Ready to Get Started?</h2>
+            <form action="https://itap.uz/login" method="GET">
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </body>
 </html>
