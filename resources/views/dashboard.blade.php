@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
                     <!-- Home ga qaytish tugmasi -->
-                    <a href="{{ route('') }}">
+                    <a href="{{ route('admin.qrcodes') }}">
                         <button class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded">
                             Home
                         </button>

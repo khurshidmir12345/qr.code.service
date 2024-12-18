@@ -2,7 +2,11 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Profile') }}
+            <div class="float-right border-gray-500">
+                <a href="{{route('admin.qrcodes.index')}}">go to home</a>
+            </div>
         </h2>
+
     </x-slot>
 
     <div class="py-12">
