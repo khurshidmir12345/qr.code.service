@@ -22,11 +22,25 @@
                                     </tr>
                                     <tr>
                                         <th>QR-Link:</th>
-                                        <td><a href="{{ $qrCode->qr_link }}" target="_blank">{{ $qrCode->qr_link }}</a></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="{{ $qrCode->qr_link }}" target="_blank" id="qr-link">{{ $qrCode->qr_link }}</a>
+                                                <button class="btn btn-outline-secondary align-right btn-sm ms-2 copy-btn" data-clipboard-target="#qr-link">
+                                                    <i class="align-middle" data-feather="copy"></i>
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Generated-link:</th>
-                                        <td>{{ $qrCode->generated_link ? $qrCode->generated_link : route('qrcodes.scan',['id' => $qrCode->id]) }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span id="generated-link">{{ $qrCode->generated_link ? $qrCode->generated_link : route('qrcodes.scan',['id' => $qrCode->id]) }}</span>
+                                                <button class="btn btn-outline-secondary btn-sm ms-2 copy-btn" data-clipboard-target="#generated-link">
+                                                    <i class="align-middle" data-feather="copy"></i>
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Views:</th>

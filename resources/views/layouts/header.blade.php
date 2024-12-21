@@ -79,6 +79,22 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const clipboard = new ClipboardJS('.copy-btn');
+
+        clipboard.on('success', function (e) {
+            alert('Link copied to clipboard!');
+            e.clearSelection();
+        });
+
+        clipboard.on('error', function () {
+            alert('Failed to copy. Please try manually.');
+        });
+    });
+</script>
+
 <script src="{{asset('js/app.js')}}"></script>
 <script>feather.replace();</script>
 
