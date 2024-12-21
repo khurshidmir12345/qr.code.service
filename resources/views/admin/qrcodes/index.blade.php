@@ -18,7 +18,7 @@
                     <tr>
                         <td>{{$loop->iteration}} )</td>
                         <td>{{$qr->name}}</td>
-                        <td>{{$qr->generated_link}}</td>
+                        <td>{{ $qr->generated_link ? $qr->generated_link : route('qrcodes.scan',['id' => $qr->id]) }}</td>
                         <td>
                             <img src="{{ asset($qr->qr_image) }}" alt="QR Code Image" class="img-thumbnail" style="width: 100px; height: 100px;">
                         </td>

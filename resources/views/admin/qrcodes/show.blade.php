@@ -26,7 +26,7 @@
                                     </tr>
                                     <tr>
                                         <th>Generated-link:</th>
-                                        <td>{{ $qrCode->generated_link }}</td>
+                                        <td>{{ $qrCode->generated_link ? $qrCode->generated_link : route('qrcodes.scan',['id' => $qrCode->id]) }}</td>
                                     </tr>
                                     <tr>
                                         <th>Views:</th>

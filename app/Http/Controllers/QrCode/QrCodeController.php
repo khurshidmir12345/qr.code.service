@@ -75,6 +75,11 @@ class QrCodeController extends Controller
     public function show($id)
     {
         $qrCode = QrCode::query()->with('user')->findOrFail($id);
+        if ($qrCode->generated_link == null) {
+            $data = route('qrcodes.scan', ['id' => $qrCode->id]);
+            $qrCode->generated_link = $data;
+            $qrCode->save();
+        }
         return view('admin.qrcodes.show',compact('qrCode'));
     }
 
