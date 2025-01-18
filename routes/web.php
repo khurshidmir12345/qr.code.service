@@ -7,7 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrCode\QrCodeController;
 use App\Http\Controllers\SocialAuthController;
 use Illuminate\Support\Facades\Route;
-
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,9 +41,14 @@ Route::middleware('auth')->group(function () {
 
 });
 
+Route::get('setwebhook', function(){
+    $response = Telegram::setWebhook(['url'=>'https://itap.uz/api/telegram/webhook']);
+});
+
 Route::get('/', function () {
     return redirect()->route('login');
 })->middleware('auth');
 
 
 require __DIR__ . '/auth.php';
+

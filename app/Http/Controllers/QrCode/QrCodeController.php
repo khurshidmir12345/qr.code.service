@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\QrCode;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateQrCodeRequest;
 use Illuminate\Support\Facades\Gate;
 use SimpleSoftwareIO\QrCode\Facades\QrCode as QrCodeFacade;
 use App\Models\QrCode;
