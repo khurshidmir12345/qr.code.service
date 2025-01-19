@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\QrMove;
 use App\Models\Steps;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class TelegramController extends Controller
     public function handle(Request $request)
     {
         $update = Telegram::getWebhookUpdate();
-        $chatId = $update['message']['chat']['id'] ?? $update['callback_query']['message']['chat']['id'] ?? null;
+        $chatId = $update['message']['chat']['id'] ?? $update['callback_query']['message']['chat']['id'];
         $first_name = $request['message']['chat']['first_name'] ?? null;
         $user_name = $request['message']['chat']['username'] ?? null;
         $lastName = $update['message']['chat']['last_name'] ?? null;
@@ -50,7 +51,7 @@ class TelegramController extends Controller
             $user->save();
         }
         if ($text == '/start') {
-                $this->sendMessage($chatId, "<b>Link uchun ism kiriting misol:</b>\n Telegram,Youtube,Instagram ");
+                $this->sendMessage($chatId, "<b>Link uchun ism kiriting namuna:</b>\n Telegram,Youtube,Instagram ");
                 $step->step = 'waiting_for_name';
                 $step->save();
 
@@ -73,58 +74,148 @@ class TelegramController extends Controller
                 $keyboard = Keyboard::make()
                     ->inline()
                     ->row([
-                        Keyboard::inlineButton(['text' => "O'chirish", 'callback_data' => "delete:{$response['id']}"]),
-                        Keyboard::inlineButton(['text' => "Ko'rishlar soni", 'callback_data' => "show:{$response['id']}"]),
+                        Keyboard::inlineButton(['text' => "O'chirish 🚫", 'callback_data' => "delete:{$response['id']}"]),
+                        Keyboard::inlineButton(['text' => "Bog'lanish soni 🔗", 'callback_data' => "show:{$response['id']}"]),
                     ]);
 
                 $response = Telegram::sendPhoto([
                     'chat_id' => $chatId,
                     'photo' => InputFile::create($photoPath), // Rasmni yuborish uchun InputFile
                     'caption' => "\n<b>Link nomi: {$response['name']}</b>\n"
-                        . "\n<b>Ko'rishlar soni: {$response['views']}</b>\n"
+                        . "\n<b>Ko'rishlar soni: {$response['views']} ta</b>\n"
                         . "\n<b>Qisqartirilgan link: {$response['generated_link']}</b>",
                     'parse_mode' => 'HTML',
                     'reply_markup' => $keyboard,
 
                 ]);
-                $word = "berilgan qisqa link yoki Qr kod orqali o'tishlar soni haqida <b>ko'rishlar soni</b> tugmasi orqali xabar beramiz !\n"
+                $word = "berilgan qisqa link yoki Qr kod orqali bog'langanlar soni haqida <b>Bog'lanish soni</b> tugmasi orqali xabar beramiz !\n"
                     ."\n"."tashrifingizdan xursandmiz ! \n"."web ilovamizda kutamiz : itap.uz";
                 $this->sendMessage($chatId, $word);
                 $step->delete();
             } else {
                 $this->sendMessage($chatId, 'Iltimos linkni namunadagidek yuboring: https://allanbalo.com/allanbalo');
             }
-        } elseif ($step->step == 'start' && empty($update['callback_query'])) {
+        } elseif ($text != '/my_links' && $step->step == 'start' && empty($update['callback_query'])) {
             $this->sendMessage($chatId, 'Boshlash uchun /start ni bosing');
+        } elseif ($text == '/my_links') {
+            $qrs = QrCode::query()->where('user_id', $user->id)->get();
+
+            $keyboard = Keyboard::make()->inline();
+            foreach ($qrs as $qr) {
+                $keyboard->row([
+                    Keyboard::inlineButton(['text' => "$qr->qr_link", 'callback_data' => "mylinks:{$qr->id}"]),
+                ]);
+            }
+
+            $response = Telegram::sendMessage([
+                'chat_id' => $chatId,
+                'text' => "<b>Sizning qr kodlaringiz ro'yxati 📗</b>\n",
+                'reply_markup' => $keyboard,
+                'parse_mode' => 'HTML',
+            ]);
         }
         // Qr Code ni delete qilish qismi
         if ($update->has('callback_query')) {
             $callbackData = $update['callback_query']['data'];
             [$action, $qrId] = explode(':', $callbackData);
+            $messageId = $update['callback_query']['message']['message_id'];
 
             if ($action === 'delete') {
-                $messageId = $update['callback_query']['message']['message_id'];
                 $qr = QrCode::find($qrId);
 
                 if ($qr) {
-                    $qr->delete();
-                    Telegram::deleteMessage([
+                    $remove = new QrMove();
+                    $remove->message_id = $messageId;
+                    $remove->qr_id = $qrId;
+                    $remove->chat_id = $chatId;
+                    $remove->save();
+
+                    $message = "<b> '$qr->name' - </b> nomli qr kodni o'chirishni tasdiqlaysizmi ?\n";
+                    $keyboard = Keyboard::make()
+                        ->inline()
+                        ->row([
+                            Keyboard::inlineButton(['text' => "Ha 👍", 'callback_data' => "yes:{$messageId}"]),
+                            Keyboard::inlineButton(['text' => "Yo'q 👎", 'callback_data' => "no:{$messageId}"]),
+                        ]);
+
+                    Telegram::sendMessage([
                         'chat_id' => $chatId,
-                        'message_id' => $messageId,
+                        'text' => $message,
+                        'parse_mode' => 'HTML',
+                        'reply_markup' => $keyboard,
                     ]);
-                    $this->sendMessage($chatId, 'QR kod muvaffaqiyatli o‘chirildi! ✅');
                 } else {
-                    $this->sendMessage($chatId, 'QR kod topilmadi yoki allaqachon o‘chirib tashlangan! ⚠️');
+                    $this->sendMessage($chatId, 'QR kod topilmadi ! ⚠️');
                 }
             } elseif ($action === 'show') {
                 $qr = QrCode::query()->find($qrId);
 
-                $word = "QR code nomi : <b> $qr->name </b>\n"."\n Ko'rishlar soni: <b>$qr->views</b> ta";
                 if ($qr) {
+                    $word = "QR code nomi : <b> $qr->name </b>\n"."\nKo'rishlar soni : <b>$qr->views</b> ta";
                     $this->sendMessage($chatId, $word);
                 } else {
                     $this->sendMessage($chatId, 'QR kod topilmadi! ⚠️');
                 }
+            } elseif ($action === 'yes'){
+                $xabar = QrMove::query()->where('message_id', '=', $qrId)->first();
+                $qr = QrCode::query()->find($xabar->qr_id);
+
+               if ($qr && $xabar->chat_id == $chatId) {
+                     $qr->delete();
+                     Telegram::deleteMessage([
+                         'chat_id' => $chatId,
+                         'message_id' => $xabar->message_id,
+                     ]);
+                     Telegram::deleteMessage([
+                         'chat_id' => $chatId,
+                         'message_id' => $messageId,
+                     ]);
+                   $xabar->delete();
+                   $this->sendMessage($chatId, 'QR kod muvaffaqiyatli o‘chirildi! ✅');
+               } else {
+                   $this->sendMessage($chatId, 'Noto\'g\'ri harakat ⚠️ keyinroq urinib koring');
+               }
+
+            } elseif ($action === 'no') {
+                $xabarId = QrMove::query()->where('message_id', $qrId)->first();
+
+                if ($xabarId) {
+                    $xabarId->delete();
+                    Telegram::deleteMessage([
+                        'chat_id' => $chatId,
+                        'message_id' => $messageId,
+                    ]);
+                }
+
+            }elseif ($action === 'mylinks'){
+                $qr = QrCode::query()->find($qrId);
+
+                if (!$qr){
+                    $this->sendMessage($chatId, 'Qr kod topilmadi ! ⚠️');
+                }
+
+                if ($qr) {
+                $qr_image = public_path($qr->qr_image);
+
+                $keyboard = Keyboard::make()
+                    ->inline()
+                    ->row([
+                        Keyboard::inlineButton(['text' => "O'chirish 🚫", 'callback_data' => "delete:{$qr->id}"]),
+                        Keyboard::inlineButton(['text' => "Bog'lanish soni 🔗", 'callback_data' => "show:{$qr->id}"]),
+                    ]);
+
+                    $response = Telegram::sendPhoto([
+                        'chat_id' => $chatId,
+                        'photo' => InputFile::create($qr_image),
+                        'caption' => "\n<b>Link nomi: {$qr->name}</b>\n"
+                            . "\n<b>Ko'rishlar soni: {$qr->views} ta</b>\n"
+                            . "\n<b>Qisqartirilgan link:</b> \n{$qr->generated_link}",
+                        'parse_mode' => 'HTML',
+                        'reply_markup' => $keyboard,
+
+                    ]);
+                }
+
             } else {
                 $this->sendMessage($chatId, 'Noma’lum operatsiya! ⚠️');
             }
