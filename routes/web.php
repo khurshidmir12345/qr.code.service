@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('setwebhook', function(){
-    $response = Telegram::setWebhook(['url'=>'https://05d3-197-57-24-54.ngrok-free.app/api/telegram/webhook']);
+    $response = Telegram::setWebhook(['url'=>'https://itap.uz/api/telegram/webhook']);
 });
 
 Route::get('/', function () {
